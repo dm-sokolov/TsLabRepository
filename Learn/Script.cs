@@ -14,7 +14,6 @@ namespace TSLab.User
     using TSLab.Script;
     using TSLab.Script.Handlers;
 
-
     public sealed class Script : System.IDisposable
     {
 
@@ -23,6 +22,8 @@ namespace TSLab.User
         private Close Close_h = new Close();
 
         private High High_h = new High();
+
+        private Low Low_h = new Low();
 
         public Script()
         {
@@ -40,7 +41,7 @@ namespace TSLab.User
             // Initialize 'Open' item
             this.Open_h.Context = context;
             // Make 'Open' item data
-            IList<double> Open = context.GetData("Open", new string[] {
+           IList<double> Open = context.GetData("Open", new string[] {
                 "Symbol"
             }, delegate {
                 return this.Open_h.Execute(Symbol);
@@ -49,7 +50,7 @@ namespace TSLab.User
             // Initialize 'Close' item
             this.Close_h.Context = context;
             // Make 'Close' item data
-            IList<double> Close = context.GetData("Close", new string[] {
+           IList<double> Close = context.GetData("Close", new string[] {
                 "Symbol"
             }, delegate {
                 return this.Close_h.Execute(Symbol);
@@ -58,10 +59,19 @@ namespace TSLab.User
             // Initialize 'High' item
             this.High_h.Context = context;
             // Make 'High' item data
-            IList<double> High = context.GetData("High", new string[] {
+           IList<double> High = context.GetData("High", new string[] {
                 "Symbol"
             }, delegate {
                 return this.High_h.Execute(Symbol);
+
+            });
+            // Initialize 'Low' item
+            this.Low_h.Context = context;
+            // Make 'Low' item data
+           IList<double> Low = context.GetData("Low", new string[] {
+                "Symbol"
+            }, delegate {
+                return this.Low_h.Execute(Symbol);
 
             });
             // =================================================
