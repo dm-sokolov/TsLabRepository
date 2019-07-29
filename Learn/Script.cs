@@ -20,6 +20,8 @@ namespace TSLab.User
 
         private Open Open_h = new Open();
 
+        private Close Close_h = new Close();
+
         public Script()
         {
         }
@@ -40,6 +42,15 @@ namespace TSLab.User
                 "Symbol"
             }, delegate {
                 return this.Open_h.Execute(Symbol);
+
+            });
+            // Initialize 'Close' item
+            this.Close_h.Context = context;
+            // Make 'Close' item data
+            IList<double> Close = context.GetData("Close", new string[] {
+                "Symbol"
+            }, delegate {
+                return this.Close_h.Execute(Symbol);
 
             });
             // =================================================
