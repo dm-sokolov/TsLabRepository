@@ -16,13 +16,20 @@ namespace TSLab.User
 
     public sealed class Script : System.IDisposable
     {
-        
+
         public Script()
         {
         }
-        
+
         public void Execute(IContext context, ISecurity Symbol)
         {
+            // =================================================
+            // Graph & Canvas Panes
+            // =================================================
+            // Make 'PricePane' pane
+            IGraphPane PricePane_pane = context.CreateGraphPane("PricePane", null);
+            PricePane_pane.Visible = true;
+            PricePane_pane.HideLegend = false;
             // =================================================
             // Handlers
             // =================================================
@@ -38,7 +45,7 @@ namespace TSLab.User
             {
             }
         }
-        
+
         public void Dispose()
         {
         }
