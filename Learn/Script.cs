@@ -22,6 +22,8 @@ namespace TSLab.User
 
         private Close Close_h = new Close();
 
+        private High High_h = new High();
+
         public Script()
         {
         }
@@ -51,6 +53,15 @@ namespace TSLab.User
                 "Symbol"
             }, delegate {
                 return this.Close_h.Execute(Symbol);
+
+            });
+            // Initialize 'High' item
+            this.High_h.Context = context;
+            // Make 'High' item data
+            IList<double> High = context.GetData("High", new string[] {
+                "Symbol"
+            }, delegate {
+                return this.High_h.Execute(Symbol);
 
             });
             // =================================================
