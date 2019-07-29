@@ -8,13 +8,17 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using TSLab.Script;
-using TSLab.Script.Handlers;
-
 namespace TSLab.User
 {
+    using System.Collections.Generic;
+    using TSLab.Script;
+    using TSLab.Script.Handlers;
+
+
     public sealed class Script : System.IDisposable
     {
+
+        private Open Open_h = new Open();
 
         public Script()
         {
@@ -29,6 +33,15 @@ namespace TSLab.User
             IGraphPane PricePane_pane = context.CreateGraphPane("PricePane", null);
             PricePane_pane.Visible = true;
             PricePane_pane.HideLegend = false;
+            // Initialize 'Open' item
+            this.Open_h.Context = context;
+            // Make 'Open' item data
+            IList<double> Open = context.GetData("Open", new string[] {
+                "Symbol"
+            }, delegate {
+                return this.Open_h.Execute(Symbol);
+
+            });
             // =================================================
             // Handlers
             // =================================================
