@@ -8,12 +8,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using TSLab.Script;
+using TSLab.Script.Handlers;
+
 namespace TSLab.User
 {
-    using TSLab.Script;
-    using TSLab.Script.Handlers;
-
-
     public sealed class Script : System.IDisposable
     {
 
@@ -44,6 +43,21 @@ namespace TSLab.User
             for (int i = 0; (i < barsCount); i++)
             {
             }
+            if (context.IsOptimization)
+            {
+                return;
+            }
+            // =================================================
+            // Charts
+            // =================================================
+            // Make 'Symbol' chart
+            IGraphList PricePane_pane_Symbol_chart = PricePane_pane.AddList("PricePane_pane_Symbol_chart", ("Symbol"
+                            + (" ["
+                            + (Symbol.Symbol + "]"))), Symbol, CandleStyles.BAR_CANDLE, CandleFillStyle.Decreasing, true, -569787, PaneSides.RIGHT);
+            Symbol.ConnectSecurityList(PricePane_pane_Symbol_chart);
+            PricePane_pane_Symbol_chart.AlternativeColor = -13869386;
+            PricePane_pane_Symbol_chart.Autoscaling = true;
+            PricePane_pane.UpdatePrecision(PaneSides.RIGHT, Symbol.Decimals);
         }
 
         public void Dispose()
