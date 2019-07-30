@@ -40,6 +40,8 @@ namespace TSLab.User
 
         private CrossOver ПересечСверху_h = new CrossOver();
 
+        private CrossUnder ПересечСнизу_h = new CrossUnder();
+
         public IntOptimProperty МинимумСессии_Session = new IntOptimProperty(1, false, 0, 10, 1);
 
         public IntOptimProperty МаксимуСессии_Session = new IntOptimProperty(1, false, 0, 10, 1);
@@ -158,6 +160,15 @@ namespace TSLab.User
                 "Symbol"
             }, delegate {
                 return this.ПересечСверху_h.Execute(Open, Close);
+
+            });
+            // Initialize 'ПересечСнизу' item
+            this.ПересечСнизу_h.Context = context;
+            // Make 'ПересечСнизу' item data
+            IList<bool> ПересечСнизу = context.GetData("ПересечСнизу", new string[] {
+                "Symbol"
+            }, delegate {
+                return this.ПересечСнизу_h.Execute(Open, Close);
 
             });
             // =================================================
