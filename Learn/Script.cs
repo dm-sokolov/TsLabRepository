@@ -32,6 +32,8 @@ namespace TSLab.User
 
         private Max Наибольшее_h = new Max();
 
+        private Min Наименьшее_h = new Min();
+
         public IntOptimProperty МинимумСессии_Session = new IntOptimProperty(1, false, 0, 10, 1);
 
         public IntOptimProperty МаксимуСессии_Session = new IntOptimProperty(1, false, 0, 10, 1);
@@ -114,6 +116,15 @@ namespace TSLab.User
                 "Symbol"
             }, delegate {
                 return this.Наибольшее_h.Execute(Open, Close);
+
+            });
+            // Initialize 'Наименьшее' item
+            this.Наименьшее_h.Context = context;
+            // Make 'Наименьшее' item data
+            IList<double> Наименьшее = context.GetData("Наименьшее", new string[] {
+                "Symbol"
+            }, delegate {
+                return this.Наименьшее_h.Execute(Open, Close);
 
             });
             // =================================================
