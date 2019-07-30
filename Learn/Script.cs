@@ -15,7 +15,6 @@ namespace TSLab.User
     using TSLab.Script.Handlers;
     using TSLab.Script.Optimization;
 
-
     public sealed class Script : System.IDisposable
     {
 
@@ -29,7 +28,11 @@ namespace TSLab.User
 
         private SessionLow МинимумСессии_h = new SessionLow();
 
+        private SessionHigh МаксимуСессии_h = new SessionHigh();
+
         public IntOptimProperty МинимумСессии_Session = new IntOptimProperty(1, false, 0, 10, 1);
+
+        public IntOptimProperty МаксимуСессии_Session = new IntOptimProperty(1, false, 0, 10, 1);
 
         public Script()
         {
@@ -89,6 +92,17 @@ namespace TSLab.User
                 "Symbol"
             }, delegate {
                 return this.МинимумСессии_h.Execute(Symbol);
+
+            });
+            // Initialize 'МаксимуСессии' item
+            this.МаксимуСессии_h.Context = context;
+            this.МаксимуСессии_h.Session = ((int)(this.МаксимуСессии_Session.Value));
+            // Make 'МаксимуСессии' item data
+            IList<double> МаксимуСессии = context.GetData("МаксимуСессии", new string[] {
+                this.МаксимуСессии_h.Session.ToString(),
+                "Symbol"
+            }, delegate {
+                return this.МаксимуСессии_h.Execute(Symbol);
 
             });
             // =================================================
