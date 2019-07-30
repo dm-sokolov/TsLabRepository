@@ -8,13 +8,13 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System.Collections.Generic;
+using TSLab.Script;
+using TSLab.Script.Handlers;
+using TSLab.Script.Optimization;
+
 namespace TSLab.User
 {
-    using System.Collections.Generic;
-    using TSLab.Script;
-    using TSLab.Script.Handlers;
-    using TSLab.Script.Optimization;
-
     public sealed class Script : System.IDisposable
     {
 
@@ -37,6 +37,8 @@ namespace TSLab.User
         private Add Сложить_h = new Add();
 
         private Sub Вычесть_h = new Sub();
+
+        private CrossOver ПересечСверху_h = new CrossOver();
 
         public IntOptimProperty МинимумСессии_Session = new IntOptimProperty(1, false, 0, 10, 1);
 
@@ -147,6 +149,15 @@ namespace TSLab.User
                 "Symbol"
             }, delegate {
                 return this.Вычесть_h.Execute(Open, Close);
+
+            });
+            // Initialize 'ПересечСверху' item
+            this.ПересечСверху_h.Context = context;
+            // Make 'ПересечСверху' item data
+            IList<bool> ПересечСверху = context.GetData("ПересечСверху", new string[] {
+                "Symbol"
+            }, delegate {
+                return this.ПересечСверху_h.Execute(Open, Close);
 
             });
             // =================================================
