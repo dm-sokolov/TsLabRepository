@@ -8,13 +8,13 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using System.Collections.Generic;
-using TSLab.Script;
-using TSLab.Script.Handlers;
-using TSLab.Script.Optimization;
-
 namespace TSLab.User
 {
+    using System.Collections.Generic;
+    using TSLab.Script;
+    using TSLab.Script.Handlers;
+    using TSLab.Script.Optimization;
+
     public sealed class Script : System.IDisposable
     {
 
@@ -35,6 +35,8 @@ namespace TSLab.User
         private Min Наименьшее_h = new Min();
 
         private Add Сложить_h = new Add();
+
+        private Sub Вычесть_h = new Sub();
 
         public IntOptimProperty МинимумСессии_Session = new IntOptimProperty(1, false, 0, 10, 1);
 
@@ -136,6 +138,15 @@ namespace TSLab.User
                 "Symbol"
             }, delegate {
                 return this.Сложить_h.Execute(Open, Close);
+
+            });
+            // Initialize 'Вычесть' item
+            this.Вычесть_h.Context = context;
+            // Make 'Вычесть' item data
+            IList<double> Вычесть = context.GetData("Вычесть", new string[] {
+                "Symbol"
+            }, delegate {
+                return this.Вычесть_h.Execute(Open, Close);
 
             });
             // =================================================
