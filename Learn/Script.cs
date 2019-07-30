@@ -13,6 +13,8 @@ namespace TSLab.User
     using System.Collections.Generic;
     using TSLab.Script;
     using TSLab.Script.Handlers;
+    using TSLab.Script.Optimization;
+
 
     public sealed class Script : System.IDisposable
     {
@@ -24,6 +26,10 @@ namespace TSLab.User
         private High High_h = new High();
 
         private Low Low_h = new Low();
+
+        private SessionLow МинимумСессии_h = new SessionLow();
+
+        public IntOptimProperty МинимумСессии_Session = new IntOptimProperty(1, false, 0, 10, 1);
 
         public Script()
         {
@@ -41,7 +47,7 @@ namespace TSLab.User
             // Initialize 'Open' item
             this.Open_h.Context = context;
             // Make 'Open' item data
-           IList<double> Open = context.GetData("Open", new string[] {
+            IList<double> Open = context.GetData("Open", new string[] {
                 "Symbol"
             }, delegate {
                 return this.Open_h.Execute(Symbol);
@@ -50,7 +56,7 @@ namespace TSLab.User
             // Initialize 'Close' item
             this.Close_h.Context = context;
             // Make 'Close' item data
-           IList<double> Close = context.GetData("Close", new string[] {
+            IList<double> Close = context.GetData("Close", new string[] {
                 "Symbol"
             }, delegate {
                 return this.Close_h.Execute(Symbol);
@@ -59,7 +65,7 @@ namespace TSLab.User
             // Initialize 'High' item
             this.High_h.Context = context;
             // Make 'High' item data
-           IList<double> High = context.GetData("High", new string[] {
+            IList<double> High = context.GetData("High", new string[] {
                 "Symbol"
             }, delegate {
                 return this.High_h.Execute(Symbol);
@@ -68,10 +74,21 @@ namespace TSLab.User
             // Initialize 'Low' item
             this.Low_h.Context = context;
             // Make 'Low' item data
-           IList<double> Low = context.GetData("Low", new string[] {
+            IList<double> Low = context.GetData("Low", new string[] {
                 "Symbol"
             }, delegate {
                 return this.Low_h.Execute(Symbol);
+
+            });
+            // Initialize 'МинимумСессии' item
+            this.МинимумСессии_h.Context = context;
+            this.МинимумСессии_h.Session = ((int)(this.МинимумСессии_Session.Value));
+            // Make 'МинимумСессии' item data
+            IList<double> МинимумСессии = context.GetData("МинимумСессии", new string[] {
+                this.МинимумСессии_h.Session.ToString(),
+                "Symbol"
+            }, delegate {
+                return this.МинимумСессии_h.Execute(Symbol);
 
             });
             // =================================================
