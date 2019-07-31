@@ -20,6 +20,8 @@ namespace TSLab.User
 
         private TSLab.Script.Handlers.Close Close_h = new TSLab.Script.Handlers.Close();
 
+        private TSLab.Script.Handlers.Open Open_h = new TSLab.Script.Handlers.Open();
+
         public Script()
         {
         }
@@ -40,6 +42,15 @@ namespace TSLab.User
                 "Symbol"
             }, delegate {
                 return this.Close_h.Execute(Symbol);
+
+            });
+            // Initialize 'Open' item
+            this.Open_h.Context = context;
+            // Make 'Open' item data
+            System.Collections.Generic.IList<double> Open = context.GetData("Open", new string[] {
+                "Symbol"
+            }, delegate {
+                return this.Open_h.Execute(Symbol);
 
             });
             // =================================================
