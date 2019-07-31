@@ -18,6 +18,8 @@ namespace TSLab.User
     public sealed class Script : System.IDisposable
     {
 
+        private TSLab.Script.Handlers.Close Close_h = new TSLab.Script.Handlers.Close();
+
         public Script()
         {
         }
@@ -31,6 +33,15 @@ namespace TSLab.User
             TSLab.Script.IGraphPane MainChart_pane = context.CreateGraphPane("MainChart", null);
             MainChart_pane.Visible = true;
             MainChart_pane.HideLegend = false;
+            // Initialize 'Close' item
+            this.Close_h.Context = context;
+            // Make 'Close' item data
+            System.Collections.Generic.IList<double> Close = context.GetData("Close", new string[] {
+                "Symbol"
+            }, delegate {
+                return this.Close_h.Execute(Symbol);
+
+            });
             // =================================================
             // Handlers
             // =================================================
