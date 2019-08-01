@@ -97,7 +97,7 @@ namespace TSLab.User
             System.Collections.Generic.IList<bool> isOpenLessClose;
             try
             {
-                int count = System.Math.Min(Close.Count, Open.Count);
+                int count = System.Math.Min(Open.Count, Close.Count);
                 bool[] list = new bool[count];
                 if ((context.IsLastBarUsed == false))
                 {
@@ -142,6 +142,8 @@ namespace TSLab.User
             });
             double calcBUYTP = 0;
             double calcBUYSL = 0;
+            double calcSellSL = 0;
+            double calcSellTP = 0;
             // =================================================
             // Handlers
             // =================================================
@@ -181,7 +183,10 @@ namespace TSLab.User
                         OpenMarketPositionBUY.CloseAtStop(i + 1, calcBUYSL, "CloseBuySL");
                     }
                 }
-                isOpenMoreCloseAndIsNotActivePositions = this.isOpenMoreCloseAndIsNotActivePositions_h.Execute(isOpenMoreClose[i], isNotActivePositions);
+                isOpenMoreCloseAndIsNotActivePositions = this.isOpenMoreCloseAndIsNotActivePositions_h.Execute(isNotActivePositions, isOpenMoreClose[i]);
+                ЦенаВходаSELL = this.ЦенаВходаSELL_h.Execute(OpenMarketPositionSELL, i);
+                calcSellSL = ЦенаВходаSELL + k[i];
+                calcSellTP = ЦенаВходаSELL - k[i];
                 if ((OpenMarketPositionSELL == null))
                 {
                     if (isOpenMoreCloseAndIsNotActivePositions)
@@ -196,6 +201,8 @@ namespace TSLab.User
                 {
                     if ((OpenMarketPositionSELL.EntryBarNum <= i))
                     {
+                        OpenMarketPositionSELL.CloseAtStop(i + 1, calcSellSL, "CloseSellSL");
+                        OpenMarketPositionSELL.CloseAtProfit(i + 1, calcSellTP, "CloseSellTP");
                     }
                 }
             }
