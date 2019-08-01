@@ -30,6 +30,8 @@ namespace TSLab.User
 
         private TSLab.Script.Handlers.EntryPrice ЦенаВходаBUY_h = new TSLab.Script.Handlers.EntryPrice();
 
+        private TSLab.Script.Handlers.EntryPrice ЦенаВходаSELL_h = new TSLab.Script.Handlers.EntryPrice();
+
         public Script()
         {
         }
@@ -93,7 +95,7 @@ namespace TSLab.User
             System.Collections.Generic.IList<bool> isOpenLessClose;
             try
             {
-                int count = System.Math.Min(Open.Count, Close.Count);
+                int count = System.Math.Min(Close.Count, Open.Count);
                 bool[] list = new bool[count];
                 if ((context.IsLastBarUsed == false))
                 {
@@ -123,10 +125,12 @@ namespace TSLab.User
             TSLab.Script.IPosition OpenMarketPositionBUY;
             // Initialize 'ЦенаВходаBUY' item
             double ЦенаВходаBUY = 0;
+            TSLab.Script.IPosition OpenMarketPositionSELL;
+            // Initialize 'ЦенаВходаSELL' item
+            double ЦенаВходаSELL = 0;
             // =================================================
             // Handlers
             // =================================================
-            TSLab.Script.IPosition OpenMarketPositionSELL;
             // =================================================
             // Trading
             // =================================================
@@ -158,7 +162,7 @@ namespace TSLab.User
                     {
                     }
                 }
-                isOpenMoreCloseAndIsNotActivePositions = this.isOpenMoreCloseAndIsNotActivePositions_h.Execute(isNotActivePositions, isOpenMoreClose[i]);
+                isOpenMoreCloseAndIsNotActivePositions = this.isOpenMoreCloseAndIsNotActivePositions_h.Execute(isOpenMoreClose[i], isNotActivePositions);
                 if ((OpenMarketPositionSELL == null))
                 {
                     if (isOpenMoreCloseAndIsNotActivePositions)
