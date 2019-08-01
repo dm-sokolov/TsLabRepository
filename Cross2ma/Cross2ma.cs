@@ -28,6 +28,8 @@ namespace TSLab.User
 
         private TSLab.Script.Handlers.And isOpenLessCloseAndIsNotActivePositions_h = new TSLab.Script.Handlers.And();
 
+        private TSLab.Script.Handlers.EntryPrice ЦенаВходаBUY_h = new TSLab.Script.Handlers.EntryPrice();
+
         public Script()
         {
         }
@@ -118,10 +120,12 @@ namespace TSLab.User
             // Initialize 'isOpenLessCloseAndIsNotActivePositions' item
             this.isOpenLessCloseAndIsNotActivePositions_h.Context = context;
             bool isOpenLessCloseAndIsNotActivePositions = false;
+            TSLab.Script.IPosition OpenMarketPositionBUY;
+            // Initialize 'ЦенаВходаBUY' item
+            double ЦенаВходаBUY = 0;
             // =================================================
             // Handlers
             // =================================================
-            TSLab.Script.IPosition OpenMarketPositionBUY;
             TSLab.Script.IPosition OpenMarketPositionSELL;
             // =================================================
             // Trading
