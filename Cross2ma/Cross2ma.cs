@@ -53,6 +53,31 @@ namespace TSLab.User
                 return this.Open_h.Execute(Symbol);
 
             });
+            // Make 'isOpenMoreClose' item data
+            System.Collections.Generic.IList<bool> isOpenMoreClose;
+            try
+            {
+                int count = System.Math.Min(Open.Count, Close.Count);
+                bool[] list = new bool[count];
+                if ((context.IsLastBarUsed == false))
+                {
+                    count--;
+                }
+                for (int i = 0; (i < count); i++)
+                {
+                    list[i] = Open[i] > Close[i];
+                }
+                if ((count > 0
+                            && (context.IsLastBarUsed == false)))
+                {
+                    list[count] = list[count - 1];
+                }
+                isOpenMoreClose = list;
+            }
+            catch (System.ArgumentOutOfRangeException)
+            {
+                throw new TSLab.Script.ScriptException("Ошибка при вычислении блока \'isOpenMoreClose\'. Индекс за пределами диапазона.");
+            }
             // =================================================
             // Handlers
             // =================================================
