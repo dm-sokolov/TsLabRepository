@@ -22,6 +22,8 @@ namespace TSLab.User
 
         private TSLab.Script.Handlers.Open Open_h = new TSLab.Script.Handlers.Open();
 
+        private TSLab.Script.Handlers.HasPositionActive isActivePositions_h = new TSLab.Script.Handlers.HasPositionActive();
+
         public Script()
         {
         }
@@ -78,6 +80,8 @@ namespace TSLab.User
             {
                 throw new TSLab.Script.ScriptException("Ошибка при вычислении блока \'isOpenMoreClose\'. Индекс за пределами диапазона.");
             }
+            // Initialize 'isActivePositions' item
+            bool isActivePositions = false;
             // =================================================
             // Handlers
             // =================================================
