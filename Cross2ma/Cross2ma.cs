@@ -55,11 +55,14 @@ namespace TSLab.User
                 return this.Open_h.Execute(Symbol);
 
             });
+            // Initialize 'isActivePositions' item
+            bool isActivePositions = false;
+            bool isNotActivePositions = false;
             // Make 'isOpenMoreClose' item data
             System.Collections.Generic.IList<bool> isOpenMoreClose;
             try
             {
-                int count = System.Math.Min(Close.Count, Open.Count);
+                int count = System.Math.Min(Open.Count, Close.Count);
                 bool[] list = new bool[count];
                 if ((context.IsLastBarUsed == false))
                 {
@@ -80,9 +83,31 @@ namespace TSLab.User
             {
                 throw new TSLab.Script.ScriptException("Ошибка при вычислении блока \'isOpenMoreClose\'. Индекс за пределами диапазона.");
             }
-            // Initialize 'isActivePositions' item
-            bool isActivePositions = false;
-            bool isNotActivePositions = false;
+            // Make 'isOpenLessClose' item data
+            System.Collections.Generic.IList<bool> isOpenLessClose;
+            try
+            {
+                int count = System.Math.Min(Close.Count, Open.Count);
+                bool[] list = new bool[count];
+                if ((context.IsLastBarUsed == false))
+                {
+                    count--;
+                }
+                for (int i = 0; (i < count); i++)
+                {
+                    list[i] = Open[i] < Close[i];
+                }
+                if ((count > 0
+                            && (context.IsLastBarUsed == false)))
+                {
+                    list[count] = list[count - 1];
+                }
+                isOpenLessClose = list;
+            }
+            catch (System.ArgumentOutOfRangeException)
+            {
+                throw new TSLab.Script.ScriptException("Ошибка при вычислении блока \'isOpenLessClose\'. Индекс за пределами диапазона.");
+            }
             // =================================================
             // Handlers
             // =================================================
