@@ -32,6 +32,8 @@ namespace TSLab.User
 
         private TSLab.Script.Handlers.EntryPrice ЦенаВходаSELL_h = new TSLab.Script.Handlers.EntryPrice();
 
+        private TSLab.Script.Handlers.ConstGen k_h = new TSLab.Script.Handlers.ConstGen();
+
         public Script()
         {
         }
@@ -95,7 +97,7 @@ namespace TSLab.User
             System.Collections.Generic.IList<bool> isOpenLessClose;
             try
             {
-                int count = System.Math.Min(Close.Count, Open.Count);
+                int count = System.Math.Min(Open.Count, Close.Count);
                 bool[] list = new bool[count];
                 if ((context.IsLastBarUsed == false))
                 {
@@ -128,6 +130,16 @@ namespace TSLab.User
             TSLab.Script.IPosition OpenMarketPositionSELL;
             // Initialize 'ЦенаВходаSELL' item
             double ЦенаВходаSELL = 0;
+            // Initialize 'k' item
+            this.k_h.Value = 0.001D;
+            // Make 'k' item data
+            System.Collections.Generic.IList<double> k = context.GetData("k", new string[] {
+                this.k_h.Value.ToString(),
+                "Symbol"
+            }, delegate {
+                return this.k_h.Execute(context);
+
+            });
             // =================================================
             // Handlers
             // =================================================
@@ -162,7 +174,7 @@ namespace TSLab.User
                     {
                     }
                 }
-                isOpenMoreCloseAndIsNotActivePositions = this.isOpenMoreCloseAndIsNotActivePositions_h.Execute(isOpenMoreClose[i], isNotActivePositions);
+                isOpenMoreCloseAndIsNotActivePositions = this.isOpenMoreCloseAndIsNotActivePositions_h.Execute(isNotActivePositions, isOpenMoreClose[i]);
                 if ((OpenMarketPositionSELL == null))
                 {
                     if (isOpenMoreCloseAndIsNotActivePositions)
