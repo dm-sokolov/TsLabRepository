@@ -162,6 +162,7 @@ namespace TSLab.User
                 isOpenLessCloseAndIsNotActivePositions = this.isOpenLessCloseAndIsNotActivePositions_h.Execute(isNotActivePositions, isOpenLessClose[i]);
                 ЦенаВходаBUY = this.ЦенаВходаBUY_h.Execute(OpenMarketPositionBUY, i);
                 calcBUYTP = ЦенаВходаBUY + k[i];
+                calcBUYSL = ЦенаВходаBUY - k[i];
                 if ((OpenMarketPositionBUY == null))
                 {
                     if (isOpenLessCloseAndIsNotActivePositions)
@@ -177,6 +178,7 @@ namespace TSLab.User
                     if ((OpenMarketPositionBUY.EntryBarNum <= i))
                     {
                         OpenMarketPositionBUY.CloseAtProfit(i + 1, calcBUYTP, "CloseBuyTP");
+                        OpenMarketPositionBUY.CloseAtStop(i + 1, calcBUYSL, "CloseBuySL");
                     }
                 }
                 isOpenMoreCloseAndIsNotActivePositions = this.isOpenMoreCloseAndIsNotActivePositions_h.Execute(isOpenMoreClose[i], isNotActivePositions);
