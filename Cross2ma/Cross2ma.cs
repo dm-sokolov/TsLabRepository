@@ -26,6 +26,8 @@ namespace TSLab.User
 
         private TSLab.Script.Handlers.And isOpenMoreCloseAndIsNotActivePositions_h = new TSLab.Script.Handlers.And();
 
+        private TSLab.Script.Handlers.And isOpenLessCloseAndIsNotActivePositions_h = new TSLab.Script.Handlers.And();
+
         public Script()
         {
         }
@@ -113,6 +115,9 @@ namespace TSLab.User
             // Initialize 'isOpenMoreCloseAndIsNotActivePositions' item
             this.isOpenMoreCloseAndIsNotActivePositions_h.Context = context;
             bool isOpenMoreCloseAndIsNotActivePositions = false;
+            // Initialize 'isOpenLessCloseAndIsNotActivePositions' item
+            this.isOpenLessCloseAndIsNotActivePositions_h.Context = context;
+            bool isOpenLessCloseAndIsNotActivePositions = false;
             // =================================================
             // Handlers
             // =================================================
