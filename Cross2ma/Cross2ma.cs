@@ -24,6 +24,8 @@ namespace TSLab.User
 
         private TSLab.Script.Handlers.HasPositionActive isActivePositions_h = new TSLab.Script.Handlers.HasPositionActive();
 
+        private TSLab.Script.Handlers.And isOpenMoreCloseAndIsNotActivePositions_h = new TSLab.Script.Handlers.And();
+
         public Script()
         {
         }
@@ -87,7 +89,7 @@ namespace TSLab.User
             System.Collections.Generic.IList<bool> isOpenLessClose;
             try
             {
-                int count = System.Math.Min(Close.Count, Open.Count);
+                int count = System.Math.Min(Open.Count, Close.Count);
                 bool[] list = new bool[count];
                 if ((context.IsLastBarUsed == false))
                 {
@@ -108,6 +110,9 @@ namespace TSLab.User
             {
                 throw new TSLab.Script.ScriptException("Ошибка при вычислении блока \'isOpenLessClose\'. Индекс за пределами диапазона.");
             }
+            // Initialize 'isOpenMoreCloseAndIsNotActivePositions' item
+            this.isOpenMoreCloseAndIsNotActivePositions_h.Context = context;
+            bool isOpenMoreCloseAndIsNotActivePositions = false;
             // =================================================
             // Handlers
             // =================================================
