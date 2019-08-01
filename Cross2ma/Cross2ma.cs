@@ -122,6 +122,7 @@ namespace TSLab.User
             // Handlers
             // =================================================
             TSLab.Script.IPosition OpenMarketPositionBUY;
+            TSLab.Script.IPosition OpenMarketPositionSELL;
             // =================================================
             // Trading
             // =================================================
@@ -133,6 +134,7 @@ namespace TSLab.User
             for (int i = 0; (i < barsCount); i++)
             {
                 OpenMarketPositionBUY = Symbol.Positions.GetLastActiveForSignal("OpenMarketPositionBUY", i);
+                OpenMarketPositionSELL = Symbol.Positions.GetLastActiveForSignal("OpenMarketPositionSELL", i);
                 isActivePositions = this.isActivePositions_h.Execute(Symbol, i);
                 isNotActivePositions = !isActivePositions;
                 isOpenLessCloseAndIsNotActivePositions = this.isOpenLessCloseAndIsNotActivePositions_h.Execute(isNotActivePositions, isOpenLessClose[i]);
@@ -149,6 +151,23 @@ namespace TSLab.User
                 else
                 {
                     if ((OpenMarketPositionBUY.EntryBarNum <= i))
+                    {
+                    }
+                }
+                isOpenMoreCloseAndIsNotActivePositions = this.isOpenMoreCloseAndIsNotActivePositions_h.Execute(isNotActivePositions, isOpenMoreClose[i]);
+                if ((OpenMarketPositionSELL == null))
+                {
+                    if (isOpenMoreCloseAndIsNotActivePositions)
+                    {
+                        if ((context.TradeFromBar <= i))
+                        {
+                            Symbol.Positions.OpenAtMarket(false, i + 1, 1000D, "OpenMarketPositionSELL");
+                        }
+                    }
+                }
+                else
+                {
+                    if ((OpenMarketPositionSELL.EntryBarNum <= i))
                     {
                     }
                 }
