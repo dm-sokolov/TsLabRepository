@@ -97,7 +97,7 @@ namespace TSLab.User
             System.Collections.Generic.IList<bool> isOpenLessClose;
             try
             {
-                int count = System.Math.Min(Close.Count, Open.Count);
+                int count = System.Math.Min(Open.Count, Close.Count);
                 bool[] list = new bool[count];
                 if ((context.IsLastBarUsed == false))
                 {
@@ -140,7 +140,8 @@ namespace TSLab.User
                 return this.k_h.Execute(context);
 
             });
-            double calcBUY = 0;
+            double calcBUYTP = 0;
+            double calcBUYSL = 0;
             // =================================================
             // Handlers
             // =================================================
@@ -175,7 +176,7 @@ namespace TSLab.User
                     {
                     }
                 }
-                isOpenMoreCloseAndIsNotActivePositions = this.isOpenMoreCloseAndIsNotActivePositions_h.Execute(isOpenMoreClose[i], isNotActivePositions);
+                isOpenMoreCloseAndIsNotActivePositions = this.isOpenMoreCloseAndIsNotActivePositions_h.Execute(isNotActivePositions, isOpenMoreClose[i]);
                 if ((OpenMarketPositionSELL == null))
                 {
                     if (isOpenMoreCloseAndIsNotActivePositions)
