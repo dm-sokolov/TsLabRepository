@@ -59,7 +59,7 @@ namespace TSLab.User
             System.Collections.Generic.IList<bool> isOpenMoreClose;
             try
             {
-                int count = System.Math.Min(Open.Count, Close.Count);
+                int count = System.Math.Min(Close.Count, Open.Count);
                 bool[] list = new bool[count];
                 if ((context.IsLastBarUsed == false))
                 {
@@ -82,6 +82,7 @@ namespace TSLab.User
             }
             // Initialize 'isActivePositions' item
             bool isActivePositions = false;
+            bool isNotActivePositions = false;
             // =================================================
             // Handlers
             // =================================================
