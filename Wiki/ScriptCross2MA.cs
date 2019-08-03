@@ -33,7 +33,7 @@ namespace TsLab.Strategies
 
         public OptimProperty TrailStop_TrailLoss = new OptimProperty(0.5D, false, 0.1D, 3D, 0.1D, 1);
 
-        public BoolOptimProperty OpenOrderMarket_Long = new BoolOptimProperty(true, false);
+        public BoolOptimProperty OpenOrderMarket = new BoolOptimProperty(true, false);
 
         public ScriptCross2MA()
         {
@@ -122,7 +122,7 @@ namespace TsLab.Strategies
                     {
                         if ((context.TradeFromBar <= i))
                         {
-                            Symbol.Positions.OpenAtMarket(((bool)(OpenOrderMarket_Long.Value)), i + 1, 1D, "OpenOrderMarket");
+                            Symbol.Positions.OpenAtMarket(((bool)(this.OpenOrderMarket.Value)), i + 1, 1D, "OpenOrderMarket");
                         }
                     }
                 }
@@ -169,8 +169,5 @@ namespace TsLab.Strategies
             MainChart_pane.UpdatePrecision(PaneSides.RIGHT, Symbol.Decimals);
         }
 
-        public void Dispose()
-        {
-        }
     }
 }
