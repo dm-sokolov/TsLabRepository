@@ -17,7 +17,7 @@ namespace TSLab.User
     using TSLab.Script.Optimization;
 
 
-    public sealed class Script : IDisposable
+    public sealed class Cross2MA_Script : IDisposable
     {
 
         private Close Close_h = new Close();
@@ -44,7 +44,7 @@ namespace TSLab.User
 
         public BoolOptimProperty OpenOrderMarket_Long = new BoolOptimProperty(true, false);
 
-        public Script()
+        public Cross2MA_Script()
         {
         }
 
