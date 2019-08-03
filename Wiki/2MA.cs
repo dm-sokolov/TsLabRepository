@@ -10,13 +10,14 @@
 
 namespace TSLab.User
 {
+    using System;
     using System.Collections.Generic;
     using TSLab.Script;
     using TSLab.Script.Handlers;
     using TSLab.Script.Optimization;
 
 
-    public sealed class Script : System.IDisposable
+    public sealed class Script : IDisposable
     {
 
         private Close Close_h = new Close();
@@ -41,7 +42,7 @@ namespace TSLab.User
 
         public OptimProperty TrailStop_TrailLoss = new OptimProperty(0.5D, false, 0.1D, 3D, 0.1D, 1);
 
-        public BoolOptimProperty OpenOrderMarket = new BoolOptimProperty(true, false);
+        public BoolOptimProperty OpenOrderMarket_Long = new BoolOptimProperty(true, false);
 
         public Script()
         {
@@ -130,7 +131,7 @@ namespace TSLab.User
                     {
                         if ((context.TradeFromBar <= i))
                         {
-                            Symbol.Positions.OpenAtMarket(((bool)(this.OpenOrderMarket.Value)), i + 1, 1D, "OpenOrderMarket");
+                            Symbol.Positions.OpenAtMarket(((bool)(this.OpenOrderMarket_Long.Value)), i + 1, 1D, "OpenOrderMarket");
                         }
                     }
                 }
