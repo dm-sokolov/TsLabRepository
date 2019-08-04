@@ -10,17 +10,17 @@ namespace Wiki
 
         #region New Objects
 
-        private Close Close_h = new Close();
+        private Close Close = new Close();
 
-        private EMA SlowEMA_h = new EMA();
+        private EMA SlowEMA = new EMA();
 
-        private EMA FastEMA_h = new EMA();
+        private EMA FastEMA = new EMA();
 
-        private CrossUnder CrossUnder_h = new CrossUnder();
+        private CrossUnder CrossUnder = new CrossUnder();
 
-        private TrailStop TrailStop_h = new TrailStop();
+        private TrailStop TrailStop = new TrailStop();
 
-        private AbsolutCommission AbsComission_h = new AbsolutCommission();
+        private AbsolutCommission AbsComission = new AbsolutCommission();
 
         #endregion
 
@@ -52,46 +52,46 @@ namespace Wiki
             mainChartPane.HideLegend = false;
 
             // Initialize 'Close' item
-            Close_h.Context = context;
+            Close.Context = context;
             // Make 'Close' item data
             var close = context.GetData("Close", new string[] {
                 "Symbol"
-            }, () => Close_h.Execute(symbol));
+            }, () => Close.Execute(symbol));
 
             // Initialize 'SlowEMA' item
-            SlowEMA_h.Context = context;
-            SlowEMA_h.Period = ((int)(SlowEmaPeriod.Value));
+            SlowEMA.Context = context;
+            SlowEMA.Period = ((int)(SlowEmaPeriod.Value));
             // Make 'SlowEMA' item data
             var slowEma = context.GetData("SlowEMA", new string[] {
-                SlowEMA_h.Period.ToString(),
+                SlowEMA.Period.ToString(),
                 "Symbol"
-            }, () => SlowEMA_h.Execute(close));
+            }, () => SlowEMA.Execute(close));
 
             // Initialize 'FastEMA' item
-            FastEMA_h.Context = context;
-            FastEMA_h.Period = ((int)(FastEmaPeriod.Value));
+            FastEMA.Context = context;
+            FastEMA.Period = ((int)(FastEmaPeriod.Value));
             // Make 'FastEMA' item data
             var fastEma = context.GetData("FastEMA", new string[] {
-                FastEMA_h.Period.ToString(),
+                FastEMA.Period.ToString(),
                 "Symbol"
-            }, () => FastEMA_h.Execute(close));
+            }, () => FastEMA.Execute(close));
 
             // Initialize 'CrossUnder' item
-            CrossUnder_h.Context = context;
+            CrossUnder.Context = context;
             // Make 'CrossUnder' item data
             var crossUnder = context.GetData("CrossUnder", new string[] {
-                SlowEMA_h.Period.ToString(),
-                FastEMA_h.Period.ToString(),
+                SlowEMA.Period.ToString(),
+                FastEMA.Period.ToString(),
                 "Symbol"
-            }, () => CrossUnder_h.Execute(slowEma, fastEma));
+            }, () => CrossUnder.Execute(slowEma, fastEma));
 
             IPosition openOrderMarket;
 
             // Initialize 'TrailStop' item
-            TrailStop_h.StopLoss = ((double)(TrailStopStopLoss.Value));
-            TrailStop_h.TrailEnable = ((double)(TrailStopTrailEnable.Value));
-            TrailStop_h.TrailLoss = ((double)(TrailStopTrailLoss.Value));
-            TrailStop_h.UseCalcPrice = false;
+            TrailStop.StopLoss = ((double)(TrailStopStopLoss.Value));
+            TrailStop.TrailEnable = ((double)(TrailStopTrailEnable.Value));
+            TrailStop.TrailLoss = ((double)(TrailStopTrailLoss.Value));
+            TrailStop.UseCalcPrice = false;
             double trailStop = 0;
 
             #endregion
@@ -102,9 +102,9 @@ namespace Wiki
             // =================================================
 
             // Initialize 'AbsComission' item
-            AbsComission_h.Commission = 0.0002D;
+            AbsComission.Commission = 0.0002D;
             // Make 'AbsComission' item data
-            AbsComission_h.Execute(symbol);
+            AbsComission.Execute(symbol);
 
             #endregion
 
@@ -122,7 +122,7 @@ namespace Wiki
             for (var i = 0; (i < barsCount); i++)
             {
                 openOrderMarket = symbol.Positions.GetLastActiveForSignal("OpenOrderMarket", i);
-                trailStop = TrailStop_h.Execute(openOrderMarket, i);
+                trailStop = TrailStop.Execute(openOrderMarket, i);
                 if ((openOrderMarket == null))
                 {
                     if (crossUnder[i])
@@ -165,7 +165,7 @@ namespace Wiki
 
             // Make 'SlowEMA' chart
             var mainChartPaneSlowEmaChart = mainChartPane.AddList("MainChart_pane_SlowEMA_chart", ((("SlowEMA"
-                            + (" (" + SlowEMA_h.Period))
+                            + (" (" + SlowEMA.Period))
                             + ")")
                             + (" ["
                             + (symbol.Symbol + "]"))), slowEma, ListStyles.LINE, -6815694, LineStyles.SOLID, PaneSides.RIGHT);
@@ -175,7 +175,7 @@ namespace Wiki
 
             // Make 'FastEMA' chart
             var mainChartPaneFastEmaChart = mainChartPane.AddList("MainChart_pane_FastEMA_chart", ((("FastEMA"
-                            + (" (" + FastEMA_h.Period))
+                            + (" (" + FastEMA.Period))
                             + ")")
                             + (" ["
                             + (symbol.Symbol + "]"))), fastEma, ListStyles.LINE, -16737219, LineStyles.DASH, PaneSides.RIGHT);
