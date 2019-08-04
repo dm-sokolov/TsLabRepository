@@ -56,10 +56,7 @@ namespace Wiki
             // Make 'Close' item data
             IList<double> Close = context.GetData("Close", new string[] {
                 "Symbol"
-            }, delegate
-            {
-                return Close_h.Execute(Symbol);
-            });
+            }, () => Close_h.Execute(Symbol));
 
             // Initialize 'SlowEMA' item
             SlowEMA_h.Context = context;
@@ -68,10 +65,7 @@ namespace Wiki
             IList<double> SlowEMA = context.GetData("SlowEMA", new string[] {
                 SlowEMA_h.Period.ToString(),
                 "Symbol"
-            }, delegate
-            {
-                return SlowEMA_h.Execute(Close);
-            });
+            }, () => SlowEMA_h.Execute(Close));
 
             // Initialize 'FastEMA' item
             FastEMA_h.Context = context;
@@ -80,10 +74,7 @@ namespace Wiki
             IList<double> FastEMA = context.GetData("FastEMA", new string[] {
                 FastEMA_h.Period.ToString(),
                 "Symbol"
-            }, delegate
-            {
-                return FastEMA_h.Execute(Close);
-            });
+            }, () => FastEMA_h.Execute(Close));
 
             // Initialize 'CrossUnder' item
             CrossUnder_h.Context = context;
@@ -92,10 +83,7 @@ namespace Wiki
                 SlowEMA_h.Period.ToString(),
                 FastEMA_h.Period.ToString(),
                 "Symbol"
-            }, delegate
-            {
-                return CrossUnder_h.Execute(SlowEMA, FastEMA);
-            });
+            }, () => CrossUnder_h.Execute(SlowEMA, FastEMA));
 
             IPosition OpenOrderMarket;
 
