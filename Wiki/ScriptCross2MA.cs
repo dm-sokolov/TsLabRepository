@@ -5,7 +5,7 @@ using TSLab.Script.Optimization;
 
 namespace Wiki
 {
-    public sealed class ScriptCross2MA : IExternalScript
+    public sealed class ScriptCross2Ma : IExternalScript
     {
 
         #region New Objects
@@ -26,73 +26,73 @@ namespace Wiki
 
         #region OptimProperty
 
-        public IntOptimProperty SlowEMA_Period = new IntOptimProperty(75, false, 10, 100, 5);
+        public IntOptimProperty SlowEmaPeriod = new IntOptimProperty(75, false, 10, 100, 5);
 
-        public IntOptimProperty FastEMA_Period = new IntOptimProperty(45, false, 10, 100, 5);
+        public IntOptimProperty FastEmaPeriod = new IntOptimProperty(45, false, 10, 100, 5);
 
-        public OptimProperty TrailStop_StopLoss = new OptimProperty(1.5D, false, 0.1D, 5D, 0.1D, 1);
+        public OptimProperty TrailStopStopLoss = new OptimProperty(1.5D, false, 0.1D, 5D, 0.1D, 1);
 
-        public OptimProperty TrailStop_TrailEnable = new OptimProperty(0.5D, false, 0.1D, 3D, 0.1D, 1);
+        public OptimProperty TrailStopTrailEnable = new OptimProperty(0.5D, false, 0.1D, 3D, 0.1D, 1);
 
-        public OptimProperty TrailStop_TrailLoss = new OptimProperty(0.5D, false, 0.1D, 3D, 0.1D, 1);
+        public OptimProperty TrailStopTrailLoss = new OptimProperty(0.5D, false, 0.1D, 3D, 0.1D, 1);
 
-        public BoolOptimProperty OpenOrderMarket_Long = new BoolOptimProperty(true, false);
+        public BoolOptimProperty OpenOrderMarketLong = new BoolOptimProperty(true, false);
 
         #endregion
 
-        public void Execute(IContext context, ISecurity Symbol)
+        public void Execute(IContext context, ISecurity symbol)
         {
             #region Graph & Canvas Panes
             // =================================================
             // Graph & Canvas Panes
             // =================================================
             // Make 'MainChart' pane
-            IGraphPane MainChart_pane = context.CreateGraphPane("MainChart", null);
-            MainChart_pane.Visible = true;
-            MainChart_pane.HideLegend = false;
+            IGraphPane mainChartPane = context.CreateGraphPane("MainChart", null);
+            mainChartPane.Visible = true;
+            mainChartPane.HideLegend = false;
 
             // Initialize 'Close' item
             Close_h.Context = context;
             // Make 'Close' item data
-            IList<double> Close = context.GetData("Close", new string[] {
+            IList<double> close = context.GetData("Close", new string[] {
                 "Symbol"
-            }, () => Close_h.Execute(Symbol));
+            }, () => Close_h.Execute(symbol));
 
             // Initialize 'SlowEMA' item
             SlowEMA_h.Context = context;
-            SlowEMA_h.Period = ((int)(SlowEMA_Period.Value));
+            SlowEMA_h.Period = ((int)(SlowEmaPeriod.Value));
             // Make 'SlowEMA' item data
-            IList<double> SlowEMA = context.GetData("SlowEMA", new string[] {
+            IList<double> slowEma = context.GetData("SlowEMA", new string[] {
                 SlowEMA_h.Period.ToString(),
                 "Symbol"
-            }, () => SlowEMA_h.Execute(Close));
+            }, () => SlowEMA_h.Execute(close));
 
             // Initialize 'FastEMA' item
             FastEMA_h.Context = context;
-            FastEMA_h.Period = ((int)(FastEMA_Period.Value));
+            FastEMA_h.Period = ((int)(FastEmaPeriod.Value));
             // Make 'FastEMA' item data
-            IList<double> FastEMA = context.GetData("FastEMA", new string[] {
+            IList<double> fastEma = context.GetData("FastEMA", new string[] {
                 FastEMA_h.Period.ToString(),
                 "Symbol"
-            }, () => FastEMA_h.Execute(Close));
+            }, () => FastEMA_h.Execute(close));
 
             // Initialize 'CrossUnder' item
             CrossUnder_h.Context = context;
             // Make 'CrossUnder' item data
-            IList<bool> CrossUnder = context.GetData("CrossUnder", new string[] {
+            IList<bool> crossUnder = context.GetData("CrossUnder", new string[] {
                 SlowEMA_h.Period.ToString(),
                 FastEMA_h.Period.ToString(),
                 "Symbol"
-            }, () => CrossUnder_h.Execute(SlowEMA, FastEMA));
+            }, () => CrossUnder_h.Execute(slowEma, fastEma));
 
-            IPosition OpenOrderMarket;
+            IPosition openOrderMarket;
 
             // Initialize 'TrailStop' item
-            TrailStop_h.StopLoss = ((double)(TrailStop_StopLoss.Value));
-            TrailStop_h.TrailEnable = ((double)(TrailStop_TrailEnable.Value));
-            TrailStop_h.TrailLoss = ((double)(TrailStop_TrailLoss.Value));
+            TrailStop_h.StopLoss = ((double)(TrailStopStopLoss.Value));
+            TrailStop_h.TrailEnable = ((double)(TrailStopTrailEnable.Value));
+            TrailStop_h.TrailLoss = ((double)(TrailStopTrailLoss.Value));
             TrailStop_h.UseCalcPrice = false;
-            double TrailStop = 0;
+            double trailStop = 0;
 
             #endregion
 
@@ -104,7 +104,7 @@ namespace Wiki
             // Initialize 'AbsComission' item
             AbsComission_h.Commission = 0.0002D;
             // Make 'AbsComission' item data
-            AbsComission_h.Execute(Symbol);
+            AbsComission_h.Execute(symbol);
 
             #endregion
 
@@ -112,7 +112,7 @@ namespace Wiki
             // =================================================
             // Trading
             // =================================================
-            int barsCount = Symbol.Bars.Count;
+            int barsCount = symbol.Bars.Count;
 
             if ((context.IsLastBarUsed == false))
             {
@@ -121,23 +121,23 @@ namespace Wiki
 
             for (int i = 0; (i < barsCount); i++)
             {
-                OpenOrderMarket = Symbol.Positions.GetLastActiveForSignal("OpenOrderMarket", i);
-                TrailStop = TrailStop_h.Execute(OpenOrderMarket, i);
-                if ((OpenOrderMarket == null))
+                openOrderMarket = symbol.Positions.GetLastActiveForSignal("OpenOrderMarket", i);
+                trailStop = TrailStop_h.Execute(openOrderMarket, i);
+                if ((openOrderMarket == null))
                 {
-                    if (CrossUnder[i])
+                    if (crossUnder[i])
                     {
                         if ((context.TradeFromBar <= i))
                         {
-                            Symbol.Positions.OpenAtMarket(((bool)(OpenOrderMarket_Long.Value)), i + 1, 1D, "OpenOrderMarket");
+                            symbol.Positions.OpenAtMarket(((bool)(OpenOrderMarketLong.Value)), i + 1, 1D, "OpenOrderMarket");
                         }
                     }
                 }
                 else
                 {
-                    if ((OpenOrderMarket.EntryBarNum <= i))
+                    if ((openOrderMarket.EntryBarNum <= i))
                     {
-                        OpenOrderMarket.CloseAtStop(i + 1, TrailStop, "CloseOrderSL");
+                        openOrderMarket.CloseAtStop(i + 1, trailStop, "CloseOrderSL");
                     }
                 }
             }
@@ -155,33 +155,33 @@ namespace Wiki
             // =================================================
 
             // Make 'Symbol' chart
-            IGraphList MainChart_pane_Symbol_chart = MainChart_pane.AddList("MainChart_pane_Symbol_chart", ("Symbol"
+            IGraphList mainChartPaneSymbolChart = mainChartPane.AddList("MainChart_pane_Symbol_chart", ("Symbol"
                             + (" ["
-                            + (Symbol.Symbol + "]"))), Symbol, CandleStyles.BAR_CANDLE, CandleFillStyle.All, true, -16722859, PaneSides.RIGHT);
-            Symbol.ConnectSecurityList(MainChart_pane_Symbol_chart);
-            MainChart_pane_Symbol_chart.AlternativeColor = -54485;
-            MainChart_pane_Symbol_chart.Autoscaling = true;
-            MainChart_pane.UpdatePrecision(PaneSides.RIGHT, Symbol.Decimals);
+                            + (symbol.Symbol + "]"))), symbol, CandleStyles.BAR_CANDLE, CandleFillStyle.All, true, -16722859, PaneSides.RIGHT);
+            symbol.ConnectSecurityList(mainChartPaneSymbolChart);
+            mainChartPaneSymbolChart.AlternativeColor = -54485;
+            mainChartPaneSymbolChart.Autoscaling = true;
+            mainChartPane.UpdatePrecision(PaneSides.RIGHT, symbol.Decimals);
 
             // Make 'SlowEMA' chart
-            IGraphList MainChart_pane_SlowEMA_chart = MainChart_pane.AddList("MainChart_pane_SlowEMA_chart", ((("SlowEMA"
+            IGraphList mainChartPaneSlowEmaChart = mainChartPane.AddList("MainChart_pane_SlowEMA_chart", ((("SlowEMA"
                             + (" (" + SlowEMA_h.Period))
                             + ")")
                             + (" ["
-                            + (Symbol.Symbol + "]"))), SlowEMA, ListStyles.LINE, -6815694, LineStyles.SOLID, PaneSides.RIGHT);
-            MainChart_pane_SlowEMA_chart.AlternativeColor = -16777216;
-            MainChart_pane_SlowEMA_chart.Autoscaling = true;
-            MainChart_pane.UpdatePrecision(PaneSides.RIGHT, Symbol.Decimals);
+                            + (symbol.Symbol + "]"))), slowEma, ListStyles.LINE, -6815694, LineStyles.SOLID, PaneSides.RIGHT);
+            mainChartPaneSlowEmaChart.AlternativeColor = -16777216;
+            mainChartPaneSlowEmaChart.Autoscaling = true;
+            mainChartPane.UpdatePrecision(PaneSides.RIGHT, symbol.Decimals);
 
             // Make 'FastEMA' chart
-            IGraphList MainChart_pane_FastEMA_chart = MainChart_pane.AddList("MainChart_pane_FastEMA_chart", ((("FastEMA"
+            IGraphList mainChartPaneFastEmaChart = mainChartPane.AddList("MainChart_pane_FastEMA_chart", ((("FastEMA"
                             + (" (" + FastEMA_h.Period))
                             + ")")
                             + (" ["
-                            + (Symbol.Symbol + "]"))), FastEMA, ListStyles.LINE, -16737219, LineStyles.DASH, PaneSides.RIGHT);
-            MainChart_pane_FastEMA_chart.AlternativeColor = -16777216;
-            MainChart_pane_FastEMA_chart.Autoscaling = true;
-            MainChart_pane.UpdatePrecision(PaneSides.RIGHT, Symbol.Decimals);
+                            + (symbol.Symbol + "]"))), fastEma, ListStyles.LINE, -16737219, LineStyles.DASH, PaneSides.RIGHT);
+            mainChartPaneFastEmaChart.AlternativeColor = -16777216;
+            mainChartPaneFastEmaChart.Autoscaling = true;
+            mainChartPane.UpdatePrecision(PaneSides.RIGHT, symbol.Decimals);
 
             #endregion
         }
