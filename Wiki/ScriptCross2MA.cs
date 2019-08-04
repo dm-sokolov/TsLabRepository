@@ -47,14 +47,14 @@ namespace Wiki
             // Graph & Canvas Panes
             // =================================================
             // Make 'MainChart' pane
-            IGraphPane mainChartPane = context.CreateGraphPane("MainChart", null);
+            var mainChartPane = context.CreateGraphPane("MainChart", null);
             mainChartPane.Visible = true;
             mainChartPane.HideLegend = false;
 
             // Initialize 'Close' item
             Close_h.Context = context;
             // Make 'Close' item data
-            IList<double> close = context.GetData("Close", new string[] {
+            var close = context.GetData("Close", new string[] {
                 "Symbol"
             }, () => Close_h.Execute(symbol));
 
@@ -62,7 +62,7 @@ namespace Wiki
             SlowEMA_h.Context = context;
             SlowEMA_h.Period = ((int)(SlowEmaPeriod.Value));
             // Make 'SlowEMA' item data
-            IList<double> slowEma = context.GetData("SlowEMA", new string[] {
+            var slowEma = context.GetData("SlowEMA", new string[] {
                 SlowEMA_h.Period.ToString(),
                 "Symbol"
             }, () => SlowEMA_h.Execute(close));
@@ -71,7 +71,7 @@ namespace Wiki
             FastEMA_h.Context = context;
             FastEMA_h.Period = ((int)(FastEmaPeriod.Value));
             // Make 'FastEMA' item data
-            IList<double> fastEma = context.GetData("FastEMA", new string[] {
+            var fastEma = context.GetData("FastEMA", new string[] {
                 FastEMA_h.Period.ToString(),
                 "Symbol"
             }, () => FastEMA_h.Execute(close));
@@ -79,7 +79,7 @@ namespace Wiki
             // Initialize 'CrossUnder' item
             CrossUnder_h.Context = context;
             // Make 'CrossUnder' item data
-            IList<bool> crossUnder = context.GetData("CrossUnder", new string[] {
+            var crossUnder = context.GetData("CrossUnder", new string[] {
                 SlowEMA_h.Period.ToString(),
                 FastEMA_h.Period.ToString(),
                 "Symbol"
@@ -155,7 +155,7 @@ namespace Wiki
             // =================================================
 
             // Make 'Symbol' chart
-            IGraphList mainChartPaneSymbolChart = mainChartPane.AddList("MainChart_pane_Symbol_chart", ("Symbol"
+            var mainChartPaneSymbolChart = mainChartPane.AddList("MainChart_pane_Symbol_chart", ("Symbol"
                             + (" ["
                             + (symbol.Symbol + "]"))), symbol, CandleStyles.BAR_CANDLE, CandleFillStyle.All, true, -16722859, PaneSides.RIGHT);
             symbol.ConnectSecurityList(mainChartPaneSymbolChart);
@@ -164,7 +164,7 @@ namespace Wiki
             mainChartPane.UpdatePrecision(PaneSides.RIGHT, symbol.Decimals);
 
             // Make 'SlowEMA' chart
-            IGraphList mainChartPaneSlowEmaChart = mainChartPane.AddList("MainChart_pane_SlowEMA_chart", ((("SlowEMA"
+            var mainChartPaneSlowEmaChart = mainChartPane.AddList("MainChart_pane_SlowEMA_chart", ((("SlowEMA"
                             + (" (" + SlowEMA_h.Period))
                             + ")")
                             + (" ["
@@ -174,7 +174,7 @@ namespace Wiki
             mainChartPane.UpdatePrecision(PaneSides.RIGHT, symbol.Decimals);
 
             // Make 'FastEMA' chart
-            IGraphList mainChartPaneFastEmaChart = mainChartPane.AddList("MainChart_pane_FastEMA_chart", ((("FastEMA"
+            var mainChartPaneFastEmaChart = mainChartPane.AddList("MainChart_pane_FastEMA_chart", ((("FastEMA"
                             + (" (" + FastEMA_h.Period))
                             + ")")
                             + (" ["
