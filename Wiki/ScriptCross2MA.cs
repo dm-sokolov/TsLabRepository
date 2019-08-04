@@ -112,14 +112,14 @@ namespace Wiki
             // =================================================
             // Trading
             // =================================================
-            int barsCount = symbol.Bars.Count;
+            var barsCount = symbol.Bars.Count;
 
             if ((context.IsLastBarUsed == false))
             {
                 barsCount--;
             }
 
-            for (int i = 0; (i < barsCount); i++)
+            for (var i = 0; (i < barsCount); i++)
             {
                 openOrderMarket = symbol.Positions.GetLastActiveForSignal("OpenOrderMarket", i);
                 trailStop = TrailStop_h.Execute(openOrderMarket, i);
