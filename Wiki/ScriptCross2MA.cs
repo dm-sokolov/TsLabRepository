@@ -1,5 +1,4 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using TSLab.Script;
 using TSLab.Script.Handlers;
 using TSLab.Script.Optimization;
@@ -27,9 +26,9 @@ namespace Wiki
 
         #region OptimProperty
 
-        public IntOptimProperty SlowEMA_Period = new IntOptimProperty(20, false, 10, 100, 5);
+        public IntOptimProperty SlowEMA_Period = new IntOptimProperty(75, false, 10, 100, 5);
 
-        public IntOptimProperty FastEMA_Period = new IntOptimProperty(20, false, 10, 100, 5);
+        public IntOptimProperty FastEMA_Period = new IntOptimProperty(45, false, 10, 100, 5);
 
         public OptimProperty TrailStop_StopLoss = new OptimProperty(1.5D, false, 0.1D, 5D, 0.1D, 1);
 
