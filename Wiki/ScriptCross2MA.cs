@@ -1,13 +1,11 @@
 ﻿
-namespace TsLab.Strategies
+using System.Collections.Generic;
+using TSLab.Script;
+using TSLab.Script.Handlers;
+using TSLab.Script.Optimization;
+
+namespace Wiki
 {
-    using System;
-    using System.Collections.Generic;
-    using TSLab.Script;
-    using TSLab.Script.Handlers;
-    using TSLab.Script.Optimization;
-
-
     public sealed class ScriptCross2MA : IExternalScript
     {
 
@@ -33,7 +31,7 @@ namespace TsLab.Strategies
 
         public OptimProperty TrailStop_TrailLoss = new OptimProperty(0.5D, false, 0.1D, 3D, 0.1D, 1);
 
-        public BoolOptimProperty OpenOrderMarket = new BoolOptimProperty(true, false);
+        public BoolOptimProperty OpenOrderMarket_Long = new BoolOptimProperty(true, false);
 
         public ScriptCross2MA()
         {
@@ -49,61 +47,61 @@ namespace TsLab.Strategies
             MainChart_pane.Visible = true;
             MainChart_pane.HideLegend = false;
             // Initialize 'Close' item
-            Close_h.Context = context;
+            this.Close_h.Context = context;
             // Make 'Close' item data
             IList<double> Close = context.GetData("Close", new string[] {
                 "Symbol"
             }, delegate {
-                return Close_h.Execute(Symbol);
+                return this.Close_h.Execute(Symbol);
 
             });
             // Initialize 'SlowEMA' item
-            SlowEMA_h.Context = context;
-            SlowEMA_h.Period = ((int)(SlowEMA_Period.Value));
+            this.SlowEMA_h.Context = context;
+            this.SlowEMA_h.Period = ((int)(this.SlowEMA_Period.Value));
             // Make 'SlowEMA' item data
             IList<double> SlowEMA = context.GetData("SlowEMA", new string[] {
-                SlowEMA_h.Period.ToString(),
+                this.SlowEMA_h.Period.ToString(),
                 "Symbol"
             }, delegate {
-                return SlowEMA_h.Execute(Close);
+                return this.SlowEMA_h.Execute(Close);
 
             });
             // Initialize 'FastEMA' item
-            FastEMA_h.Context = context;
-            FastEMA_h.Period = ((int)(FastEMA_Period.Value));
+            this.FastEMA_h.Context = context;
+            this.FastEMA_h.Period = ((int)(this.FastEMA_Period.Value));
             // Make 'FastEMA' item data
             IList<double> FastEMA = context.GetData("FastEMA", new string[] {
-                FastEMA_h.Period.ToString(),
+                this.FastEMA_h.Period.ToString(),
                 "Symbol"
             }, delegate {
-                return FastEMA_h.Execute(Close);
+                return this.FastEMA_h.Execute(Close);
 
             });
             // Initialize 'CrossUnder' item
-            CrossUnder_h.Context = context;
+            this.CrossUnder_h.Context = context;
             // Make 'CrossUnder' item data
             IList<bool> CrossUnder = context.GetData("CrossUnder", new string[] {
-                SlowEMA_h.Period.ToString(),
-                FastEMA_h.Period.ToString(),
+                this.SlowEMA_h.Period.ToString(),
+                this.FastEMA_h.Period.ToString(),
                 "Symbol"
             }, delegate {
-                return CrossUnder_h.Execute(SlowEMA, FastEMA);
+                return this.CrossUnder_h.Execute(SlowEMA, FastEMA);
 
             });
             IPosition OpenOrderMarket;
             // Initialize 'TrailStop' item
-            TrailStop_h.StopLoss = ((double)(TrailStop_StopLoss.Value));
-            TrailStop_h.TrailEnable = ((double)(TrailStop_TrailEnable.Value));
-            TrailStop_h.TrailLoss = ((double)(TrailStop_TrailLoss.Value));
-            TrailStop_h.UseCalcPrice = false;
+            this.TrailStop_h.StopLoss = ((double)(this.TrailStop_StopLoss.Value));
+            this.TrailStop_h.TrailEnable = ((double)(this.TrailStop_TrailEnable.Value));
+            this.TrailStop_h.TrailLoss = ((double)(this.TrailStop_TrailLoss.Value));
+            this.TrailStop_h.UseCalcPrice = false;
             double TrailStop = 0;
             // =================================================
             // Handlers
             // =================================================
             // Initialize 'AbsComission' item
-            AbsComission_h.Commission = 0.0002D;
+            this.AbsComission_h.Commission = 0.0002D;
             // Make 'AbsComission' item data
-            AbsComission_h.Execute(Symbol);
+            this.AbsComission_h.Execute(Symbol);
             // =================================================
             // Trading
             // =================================================
@@ -115,14 +113,14 @@ namespace TsLab.Strategies
             for (int i = 0; (i < barsCount); i++)
             {
                 OpenOrderMarket = Symbol.Positions.GetLastActiveForSignal("OpenOrderMarket", i);
-                TrailStop = TrailStop_h.Execute(OpenOrderMarket, i);
+                TrailStop = this.TrailStop_h.Execute(OpenOrderMarket, i);
                 if ((OpenOrderMarket == null))
                 {
                     if (CrossUnder[i])
                     {
                         if ((context.TradeFromBar <= i))
                         {
-                            Symbol.Positions.OpenAtMarket(((bool)(this.OpenOrderMarket.Value)), i + 1, 1D, "OpenOrderMarket");
+                            Symbol.Positions.OpenAtMarket(((bool)(this.OpenOrderMarket_Long.Value)), i + 1, 1D, "OpenOrderMarket");
                         }
                     }
                 }
@@ -144,14 +142,14 @@ namespace TsLab.Strategies
             // Make 'Symbol' chart
             IGraphList MainChart_pane_Symbol_chart = MainChart_pane.AddList("MainChart_pane_Symbol_chart", ("Symbol"
                             + (" ["
-                            + (Symbol.Symbol + "]"))), Symbol, CandleStyles.BAR_CANDLE, CandleFillStyle.Decreasing, true, -16776961, PaneSides.RIGHT);
+                            + (Symbol.Symbol + "]"))), Symbol, CandleStyles.BAR_CANDLE, CandleFillStyle.All, true, -16722859, PaneSides.RIGHT);
             Symbol.ConnectSecurityList(MainChart_pane_Symbol_chart);
-            MainChart_pane_Symbol_chart.AlternativeColor = -16777216;
+            MainChart_pane_Symbol_chart.AlternativeColor = -54485;
             MainChart_pane_Symbol_chart.Autoscaling = true;
             MainChart_pane.UpdatePrecision(PaneSides.RIGHT, Symbol.Decimals);
             // Make 'SlowEMA' chart
             IGraphList MainChart_pane_SlowEMA_chart = MainChart_pane.AddList("MainChart_pane_SlowEMA_chart", ((("SlowEMA"
-                            + (" (" + SlowEMA_h.Period))
+                            + (" (" + this.SlowEMA_h.Period))
                             + ")")
                             + (" ["
                             + (Symbol.Symbol + "]"))), SlowEMA, ListStyles.LINE, -6815694, LineStyles.SOLID, PaneSides.RIGHT);
@@ -160,7 +158,7 @@ namespace TsLab.Strategies
             MainChart_pane.UpdatePrecision(PaneSides.RIGHT, Symbol.Decimals);
             // Make 'FastEMA' chart
             IGraphList MainChart_pane_FastEMA_chart = MainChart_pane.AddList("MainChart_pane_FastEMA_chart", ((("FastEMA"
-                            + (" (" + FastEMA_h.Period))
+                            + (" (" + this.FastEMA_h.Period))
                             + ")")
                             + (" ["
                             + (Symbol.Symbol + "]"))), FastEMA, ListStyles.LINE, -16737219, LineStyles.DASH, PaneSides.RIGHT);
@@ -169,5 +167,8 @@ namespace TsLab.Strategies
             MainChart_pane.UpdatePrecision(PaneSides.RIGHT, Symbol.Decimals);
         }
 
+        public void Dispose()
+        {
+        }
     }
 }
