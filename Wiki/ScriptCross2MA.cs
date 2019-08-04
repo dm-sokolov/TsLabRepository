@@ -52,58 +52,58 @@ namespace Wiki
             MainChart_pane.HideLegend = false;
 
             // Initialize 'Close' item
-            this.Close_h.Context = context;
+            Close_h.Context = context;
             // Make 'Close' item data
             IList<double> Close = context.GetData("Close", new string[] {
                 "Symbol"
             }, delegate
             {
-                return this.Close_h.Execute(Symbol);
+                return Close_h.Execute(Symbol);
             });
 
             // Initialize 'SlowEMA' item
-            this.SlowEMA_h.Context = context;
-            this.SlowEMA_h.Period = ((int)(this.SlowEMA_Period.Value));
+            SlowEMA_h.Context = context;
+            SlowEMA_h.Period = ((int)(SlowEMA_Period.Value));
             // Make 'SlowEMA' item data
             IList<double> SlowEMA = context.GetData("SlowEMA", new string[] {
-                this.SlowEMA_h.Period.ToString(),
+                SlowEMA_h.Period.ToString(),
                 "Symbol"
             }, delegate
             {
-                return this.SlowEMA_h.Execute(Close);
+                return SlowEMA_h.Execute(Close);
             });
 
             // Initialize 'FastEMA' item
-            this.FastEMA_h.Context = context;
-            this.FastEMA_h.Period = ((int)(this.FastEMA_Period.Value));
+            FastEMA_h.Context = context;
+            FastEMA_h.Period = ((int)(FastEMA_Period.Value));
             // Make 'FastEMA' item data
             IList<double> FastEMA = context.GetData("FastEMA", new string[] {
-                this.FastEMA_h.Period.ToString(),
+                FastEMA_h.Period.ToString(),
                 "Symbol"
             }, delegate
             {
-                return this.FastEMA_h.Execute(Close);
+                return FastEMA_h.Execute(Close);
             });
 
             // Initialize 'CrossUnder' item
-            this.CrossUnder_h.Context = context;
+            CrossUnder_h.Context = context;
             // Make 'CrossUnder' item data
             IList<bool> CrossUnder = context.GetData("CrossUnder", new string[] {
-                this.SlowEMA_h.Period.ToString(),
-                this.FastEMA_h.Period.ToString(),
+                SlowEMA_h.Period.ToString(),
+                FastEMA_h.Period.ToString(),
                 "Symbol"
             }, delegate
             {
-                return this.CrossUnder_h.Execute(SlowEMA, FastEMA);
+                return CrossUnder_h.Execute(SlowEMA, FastEMA);
             });
 
             IPosition OpenOrderMarket;
 
             // Initialize 'TrailStop' item
-            this.TrailStop_h.StopLoss = ((double)(this.TrailStop_StopLoss.Value));
-            this.TrailStop_h.TrailEnable = ((double)(this.TrailStop_TrailEnable.Value));
-            this.TrailStop_h.TrailLoss = ((double)(this.TrailStop_TrailLoss.Value));
-            this.TrailStop_h.UseCalcPrice = false;
+            TrailStop_h.StopLoss = ((double)(TrailStop_StopLoss.Value));
+            TrailStop_h.TrailEnable = ((double)(TrailStop_TrailEnable.Value));
+            TrailStop_h.TrailLoss = ((double)(TrailStop_TrailLoss.Value));
+            TrailStop_h.UseCalcPrice = false;
             double TrailStop = 0;
 
             #endregion
@@ -114,9 +114,9 @@ namespace Wiki
             // =================================================
 
             // Initialize 'AbsComission' item
-            this.AbsComission_h.Commission = 0.0002D;
+            AbsComission_h.Commission = 0.0002D;
             // Make 'AbsComission' item data
-            this.AbsComission_h.Execute(Symbol);
+            AbsComission_h.Execute(Symbol);
 
             #endregion
 
@@ -134,14 +134,14 @@ namespace Wiki
             for (int i = 0; (i < barsCount); i++)
             {
                 OpenOrderMarket = Symbol.Positions.GetLastActiveForSignal("OpenOrderMarket", i);
-                TrailStop = this.TrailStop_h.Execute(OpenOrderMarket, i);
+                TrailStop = TrailStop_h.Execute(OpenOrderMarket, i);
                 if ((OpenOrderMarket == null))
                 {
                     if (CrossUnder[i])
                     {
                         if ((context.TradeFromBar <= i))
                         {
-                            Symbol.Positions.OpenAtMarket(((bool)(this.OpenOrderMarket_Long.Value)), i + 1, 1D, "OpenOrderMarket");
+                            Symbol.Positions.OpenAtMarket(((bool)(OpenOrderMarket_Long.Value)), i + 1, 1D, "OpenOrderMarket");
                         }
                     }
                 }
@@ -177,7 +177,7 @@ namespace Wiki
 
             // Make 'SlowEMA' chart
             IGraphList MainChart_pane_SlowEMA_chart = MainChart_pane.AddList("MainChart_pane_SlowEMA_chart", ((("SlowEMA"
-                            + (" (" + this.SlowEMA_h.Period))
+                            + (" (" + SlowEMA_h.Period))
                             + ")")
                             + (" ["
                             + (Symbol.Symbol + "]"))), SlowEMA, ListStyles.LINE, -6815694, LineStyles.SOLID, PaneSides.RIGHT);
@@ -187,7 +187,7 @@ namespace Wiki
 
             // Make 'FastEMA' chart
             IGraphList MainChart_pane_FastEMA_chart = MainChart_pane.AddList("MainChart_pane_FastEMA_chart", ((("FastEMA"
-                            + (" (" + this.FastEMA_h.Period))
+                            + (" (" + FastEMA_h.Period))
                             + ")")
                             + (" ["
                             + (Symbol.Symbol + "]"))), FastEMA, ListStyles.LINE, -16737219, LineStyles.DASH, PaneSides.RIGHT);
