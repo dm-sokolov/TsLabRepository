@@ -9,6 +9,8 @@ namespace Wiki
     public sealed class ScriptCross2MA : IExternalScript
     {
 
+        #region New Objects
+
         private Close Close_h = new Close();
 
         private EMA SlowEMA_h = new EMA();
@@ -20,6 +22,10 @@ namespace Wiki
         private TrailStop TrailStop_h = new TrailStop();
 
         private AbsolutCommission AbsComission_h = new AbsolutCommission();
+
+        #endregion
+
+        #region OptimProperty
 
         public IntOptimProperty SlowEMA_Period = new IntOptimProperty(20, false, 10, 100, 5);
 
@@ -33,12 +39,11 @@ namespace Wiki
 
         public BoolOptimProperty OpenOrderMarket_Long = new BoolOptimProperty(true, false);
 
-        public ScriptCross2MA()
-        {
-        }
+        #endregion
 
         public void Execute(IContext context, ISecurity Symbol)
         {
+            #region Graph & Canvas Panes
             // =================================================
             // Graph & Canvas Panes
             // =================================================
@@ -46,15 +51,17 @@ namespace Wiki
             IGraphPane MainChart_pane = context.CreateGraphPane("MainChart", null);
             MainChart_pane.Visible = true;
             MainChart_pane.HideLegend = false;
+
             // Initialize 'Close' item
             this.Close_h.Context = context;
             // Make 'Close' item data
             IList<double> Close = context.GetData("Close", new string[] {
                 "Symbol"
-            }, delegate {
+            }, delegate
+            {
                 return this.Close_h.Execute(Symbol);
-
             });
+
             // Initialize 'SlowEMA' item
             this.SlowEMA_h.Context = context;
             this.SlowEMA_h.Period = ((int)(this.SlowEMA_Period.Value));
@@ -62,10 +69,11 @@ namespace Wiki
             IList<double> SlowEMA = context.GetData("SlowEMA", new string[] {
                 this.SlowEMA_h.Period.ToString(),
                 "Symbol"
-            }, delegate {
+            }, delegate
+            {
                 return this.SlowEMA_h.Execute(Close);
-
             });
+
             // Initialize 'FastEMA' item
             this.FastEMA_h.Context = context;
             this.FastEMA_h.Period = ((int)(this.FastEMA_Period.Value));
@@ -73,10 +81,11 @@ namespace Wiki
             IList<double> FastEMA = context.GetData("FastEMA", new string[] {
                 this.FastEMA_h.Period.ToString(),
                 "Symbol"
-            }, delegate {
+            }, delegate
+            {
                 return this.FastEMA_h.Execute(Close);
-
             });
+
             // Initialize 'CrossUnder' item
             this.CrossUnder_h.Context = context;
             // Make 'CrossUnder' item data
@@ -84,32 +93,45 @@ namespace Wiki
                 this.SlowEMA_h.Period.ToString(),
                 this.FastEMA_h.Period.ToString(),
                 "Symbol"
-            }, delegate {
+            }, delegate
+            {
                 return this.CrossUnder_h.Execute(SlowEMA, FastEMA);
-
             });
+
             IPosition OpenOrderMarket;
+
             // Initialize 'TrailStop' item
             this.TrailStop_h.StopLoss = ((double)(this.TrailStop_StopLoss.Value));
             this.TrailStop_h.TrailEnable = ((double)(this.TrailStop_TrailEnable.Value));
             this.TrailStop_h.TrailLoss = ((double)(this.TrailStop_TrailLoss.Value));
             this.TrailStop_h.UseCalcPrice = false;
             double TrailStop = 0;
+
+            #endregion
+
+            #region Handlers
             // =================================================
             // Handlers
             // =================================================
+
             // Initialize 'AbsComission' item
             this.AbsComission_h.Commission = 0.0002D;
             // Make 'AbsComission' item data
             this.AbsComission_h.Execute(Symbol);
+
+            #endregion
+
+            #region Trading
             // =================================================
             // Trading
             // =================================================
             int barsCount = Symbol.Bars.Count;
+
             if ((context.IsLastBarUsed == false))
             {
                 barsCount--;
             }
+
             for (int i = 0; (i < barsCount); i++)
             {
                 OpenOrderMarket = Symbol.Positions.GetLastActiveForSignal("OpenOrderMarket", i);
@@ -132,13 +154,19 @@ namespace Wiki
                     }
                 }
             }
+
             if (context.IsOptimization)
             {
                 return;
             }
+
+            #endregion
+
+            #region Charts
             // =================================================
             // Charts
             // =================================================
+
             // Make 'Symbol' chart
             IGraphList MainChart_pane_Symbol_chart = MainChart_pane.AddList("MainChart_pane_Symbol_chart", ("Symbol"
                             + (" ["
@@ -147,6 +175,7 @@ namespace Wiki
             MainChart_pane_Symbol_chart.AlternativeColor = -54485;
             MainChart_pane_Symbol_chart.Autoscaling = true;
             MainChart_pane.UpdatePrecision(PaneSides.RIGHT, Symbol.Decimals);
+
             // Make 'SlowEMA' chart
             IGraphList MainChart_pane_SlowEMA_chart = MainChart_pane.AddList("MainChart_pane_SlowEMA_chart", ((("SlowEMA"
                             + (" (" + this.SlowEMA_h.Period))
@@ -156,6 +185,7 @@ namespace Wiki
             MainChart_pane_SlowEMA_chart.AlternativeColor = -16777216;
             MainChart_pane_SlowEMA_chart.Autoscaling = true;
             MainChart_pane.UpdatePrecision(PaneSides.RIGHT, Symbol.Decimals);
+
             // Make 'FastEMA' chart
             IGraphList MainChart_pane_FastEMA_chart = MainChart_pane.AddList("MainChart_pane_FastEMA_chart", ((("FastEMA"
                             + (" (" + this.FastEMA_h.Period))
@@ -165,10 +195,8 @@ namespace Wiki
             MainChart_pane_FastEMA_chart.AlternativeColor = -16777216;
             MainChart_pane_FastEMA_chart.Autoscaling = true;
             MainChart_pane.UpdatePrecision(PaneSides.RIGHT, Symbol.Decimals);
-        }
 
-        public void Dispose()
-        {
+            #endregion
         }
     }
 }
